@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spider Clock</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .clock {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,165,0,0.2);
+    }
+
+    /* Numbers */
+    .number {
+        position: absolute;
+        color: orange;
+        font-size: 18px;
+        transform: translate(-50%, -50%);
+    }
+
+    /* Clock hands */
+    .hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom;
+        transform: translateX(-50%) rotate(0deg);
+        background: orange;
+        box-shadow: 0 0 10px orange;
+    }
+
+    .hour {
+        width: 6px;
+        height: 70px;
+    }
+
+    .minute {
+        width: 4px;
+        height: 100px;
+    }
+
+    .second {
+        width: 2px;
+        height: 120px;
+        background: red;
+        box-shadow: 0 0 10px red;
+    }
+
+    /* Spider center */
+    .spider {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: orange;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 20px orange;
+    }
+
+    /* Simple legs */
+    .spider::before, .spider::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 2px;
+        background: orange;
+        top: 50%;
+        left: -20px;
+    }
+
+    .spider::after {
+        transform: rotate(60deg);
+    }
+</style>
+</head>
+
+<body>
+
+<div class="clock" id="clock">
+    <!-- Numbers -->
+</div>
+
+<script>
+const clock = document.getElementById("clock");
+
+// Add numbers
+for (let i = 1; i <= 12; i++) {
+    const num = document.createElement("div");
+    num.className = "number";
+    num.innerText = i;
+
+    const angle = (i * 30) * Math.PI / 180;
+    const radius = 130;
+
+    num.style.left = 150 + radius * Math.sin(angle) + "px";
+    num.style.top = 150 - radius * Math.cos(angle) + "px";
+
+    clock.appendChild(num);
+}
+
+// Create hands
+function createHand(className) {
+    const hand = document.createElement("div");
+    hand.className = "hand " + className;
+    clock.appendChild(hand);
+    return hand;
+}
+
+const hourHand = createHand("hour");
+const minuteHand = createHand("minute");
+const secondHand = createHand("second");
+
+// Spider center
+const spider = document.createElement("div");
+spider.className = "spider";
+clock.appendChild(spider);
+
+// Update time
+function updateClock() {
+    const now = new Date();
+
+    const sec = now.getSeconds();
+    const min = now.getMinutes();
+    const hr = now.getHours();
+
+    const secDeg = sec * 6;
+    const minDeg = min * 6 + sec * 0.1;
+    const hrDeg = hr * 30 + min * 0.5;
+
+    secondHand.style.transform = `translateX(-50%) rotate(${secDeg}deg)`;
+    minuteHand.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+    hourHand.style.transform = `translateX(-50%) rotate(${hrDeg}deg)`;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+</body>
+</html>
